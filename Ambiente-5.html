@@ -12,11 +12,17 @@
   </script>
 
   <style>
-    #controls {
+    #controls, #views {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #views {
+      top: 120px;
     }
 
     button {
@@ -42,16 +48,23 @@
 </head>
 
 <body>
-  <!-- Botones de control -->
+  <!-- Botones de reproducción -->
   <div id="controls">
-    <button id="btnPlay">Reproducir</button>
-    <button id="btnPause" disabled>Pausar</button>
+    <button id="btnPlay">▶️ Reproducir</button>
+    <button id="btnPause" disabled>⏸️ Pausar</button>
+  </div>
+
+  <!-- Menú de vistas -->
+  <div id="views">
+    <button onclick="setView('frontal')">👁️ Vista Frontal</button>
+    <button onclick="setView('lateral')">👁️ Vista Lateral</button>
+    <button onclick="setView('superior')">👁️ Vista Superior</button>
   </div>
 
   <!-- Escena de A-Frame -->
   <a-scene>
-    <a-camera position="0 1.6 0"></a-camera>
-    <a-light type="directional" position="0 1.6 1" intensity="1"></a-light>
+    <a-entity id="camara" camera position="0 1.6 0" look-controls></a-entity>
+    <a-light type="directional" position="0 3 3" intensity="1"></a-light>
 
     <a-entity id="modeloAnimado"
       gltf-model="animation.gltf"
@@ -63,7 +76,7 @@
     <a-sky color="#ECECEC"></a-sky>
   </a-scene>
 
-  <!-- Script para botones -->
+  <!-- Script para animación -->
   <script>
     const modelo = document.querySelector('#modeloAnimado');
     const playBtn = document.querySelector('#btnPlay');
@@ -89,6 +102,27 @@
         pauseBtn.disabled = true;
       }
     });
+  </script>
+
+  <!-- Script para cambiar de vista -->
+  <script>
+    function setView(vista) {
+      const camara = document.querySelector('#camara');
+      switch (vista) {
+        case 'frontal':
+          camara.setAttribute('position', { x: 0, y: 1.6, z: 0 });
+          camara.setAttribute('rotation', { x: 0, y: 0, z: 0 });
+          break;
+        case 'lateral':
+          camara.setAttribute('position', { x: -4, y: 1.6, z: -4 });
+          camara.setAttribute('rotation', { x: 0, y: 45, z: 0 });
+          break;
+        case 'superior':
+          camara.setAttribute('position', { x: 0, y: 6, z: -4 });
+          camara.setAttribute('rotation', { x: -90, y: 0, z: 0 });
+          break;
+      }
+    }
   </script>
 </body>
 </html>
