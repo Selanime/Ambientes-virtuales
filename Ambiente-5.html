@@ -33,14 +33,19 @@
     button:hover {
       background-color: #0056b3;
     }
+
+    button:disabled {
+      background-color: #999;
+      cursor: default;
+    }
   </style>
 </head>
 
 <body>
   <!-- Botones de control -->
   <div id="controls">
-    <button id="btnPlay">▶️ Reproducir</button>
-    <button id="btnPause">⏸️ Pausar</button>
+    <button id="btnPlay">Reproducir</button>
+    <button id="btnPause" disabled>Pausar</button>
   </div>
 
   <!-- Escena de A-Frame -->
@@ -51,8 +56,7 @@
     <a-entity id="modeloAnimado"
       gltf-model="animation.gltf"
       position="0 0 -4"
-      scale="1 1 1"
-      animation-mixer="clip: *; loop: repeat">
+      scale="1 1 1">
     </a-entity>
 
     <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#ccc"></a-plane>
@@ -65,12 +69,25 @@
     const playBtn = document.querySelector('#btnPlay');
     const pauseBtn = document.querySelector('#btnPause');
 
+    let mixerInitialized = false;
+
     playBtn.addEventListener('click', () => {
-      modelo.components['animation-mixer'].play();
+      if (!mixerInitialized) {
+        modelo.setAttribute('animation-mixer', 'clip: *; loop: repeat');
+        mixerInitialized = true;
+      } else {
+        modelo.components['animation-mixer'].play();
+      }
+      playBtn.disabled = true;
+      pauseBtn.disabled = false;
     });
 
     pauseBtn.addEventListener('click', () => {
-      modelo.components['animation-mixer'].pause();
+      if (modelo.components['animation-mixer']) {
+        modelo.components['animation-mixer'].pause();
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+      }
     });
   </script>
 </body>
